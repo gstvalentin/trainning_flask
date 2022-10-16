@@ -1,3 +1,4 @@
-criar venv
 terminar
 criar get para sair como json
+
+mysql-connector-python
