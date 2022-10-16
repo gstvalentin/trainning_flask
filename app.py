@@ -1,5 +1,4 @@
 from flask import Flask, flash, render_template, request, redirect, session, url_for
-from matplotlib.pyplot import cla
 
 class Jogo:
     def __init__(self, nome, categoria, console):
@@ -28,7 +27,7 @@ usuarios = {
 }
 
 app = Flask(__name__)
-app.secret_key = 'creu'
+app.secret_key = 'miau'
 
 @app.route('/')
 def index():    
@@ -74,6 +73,9 @@ def logout():
     return redirect(url_for('index'))
     
 
+@app.route('/<name>') #404
+def print_name(name):
+    return render_template('404.html')
 
 # trecho da app
 app.run(host='0.0.0.0', port=8080, debug=True)
