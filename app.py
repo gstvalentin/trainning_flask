@@ -1,4 +1,4 @@
-from flask import Flask, flash, render_template, request, redirect, session, url_for
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -14,8 +14,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = \
     )
 
 db = SQLAlchemy(app)
-
-
 
 # trecho da app
 app.run(host='0.0.0.0', port=8080, debug=True)
