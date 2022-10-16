@@ -4,16 +4,16 @@
             <thead class="thead-default">
                 <tr>
                     <th>Nome</th>
-                    <th>categoria</th>
-                    <th>Console</th>
+                    <th>Idade</th>
+                    <th>Castração</th>
                 </tr>
             </thead>
             <tbody>
-                {% for jogo in jogos %}
+                {% for gato in gatos %}
                 <tr>
-                    <td>{{ jogo.nome }}</td>
-                    <td>{{ jogo.categoria }}</td>
-                    <td>{{ jogo.console }}</td>
+                    <td>{{ gato.nome }}</td>
+                    <td>{{ gato.idade }}</td>
+                    <td>{{ gato.castracao }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
