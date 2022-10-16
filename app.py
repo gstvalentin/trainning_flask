@@ -1,33 +1,36 @@
 from flask import Flask, flash, render_template, request, redirect, session, url_for
-
-class Jogo:
-    def __init__(self, nome, categoria, console):
-        self.nome = nome
-        self.categoria = categoria
-        self.console = console
-
-jogo1 = Jogo('Tetris', 'Puzzle', 'Atari')
-jogo2 = Jogo('Creu', 'Funk Pauleira', 'Radinho de pilha')
-lista = [jogo1, jogo2]
-    
-class Usuario:
-    def __init__(self, nome, nickname, senha):
-        self.nome = nome
-        self.nickname = nickname
-        self.senha = senha
-
-usuario1 = Usuario('u1', 'u1', 'senha1')
-usuario2 = Usuario('u2', 'u2', 'senha2')
-usuario3 = Usuario('u3', 'u3', 'senha3')
-
-usuarios = {
-    usuario1.nickname: usuario1,
-    usuario2.nickname: usuario2,
-    usuario3.nickname: usuario3,
-}
+from sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.secret_key = 'miau'
+app.config['SQLALCHEMY_DATABASE_URI'] = \
+    '{SGBD}://{usuario}:{senha}@{servidor}/{database}'.format(
+        SGBD = 'mysql+mysqlconnector',
+        usuario = 'root',
+        senha = 'root',
+        servidor = 'localhost',
+        database = 'catgang'
+    )
+
+db = SQLAlchemy(app)
+
+class Gatos(db.model):
+    id = db.column(db.Integer, primary_key= True, autoincrement=True)
+    nome = db.column(db.String(50), nullable=False)
+    idade = db.column(db.String(2), nullable=False)
+    castracao = db.column(db.String(5), nullable=False)
+    
+    def __repr__(self) -> str:
+        return '<Name %r>' % self.name
+
+class Usuarios(db.model):
+    nickname = db.column(db.String(8), primary_key= True)
+    nome = db.column(db.String(20), nullable=False)
+    senha = db.column(db.String(100), nullable=False)
+    
+    def __repr__(self) -> str:
+        return '<Name %r>' % self.name
+
 
 @app.route('/')
 def index():    

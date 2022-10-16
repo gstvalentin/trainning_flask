@@ -5,31 +5,33 @@ print("Conectando...")
 try:
     conn = mysql.connector.connect(
         host='127.0.0.1',
+        port='3306',
         user='root',
-        password='admin'
+        password='root'
     )
 except mysql.connector.Error as err:
     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
         print('Existe algo errado no nome de usuário ou senha')
+        print(err.errno)
     else:
         print(err)
 
 cursor = conn.cursor()
 
-cursor.execute("DROP DATABASE IF EXISTS `jogoteca`;")
+cursor.execute("DROP DATABASE IF EXISTS `catgang`;")
 
-cursor.execute("CREATE DATABASE `jogoteca`;")
+cursor.execute("CREATE DATABASE `catgang`;")
 
-cursor.execute("USE `jogoteca`;")
+cursor.execute("USE `catgang`;")
 
 # criando tabelas
 TABLES = {}
-TABLES['Jogos'] = ('''
-    CREATE TABLE `jogos` (
+TABLES['gatos'] = ('''
+    CREATE TABLE `gatos` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `nome` varchar(50) NOT NULL,
-    `categoria` varchar(40) NOT NULL,
-    `console` varchar(20) NOT NULL,
+    `idade` varchar(2) NOT NULL,
+    `castracao` varchar(5) NOT NULL,
     PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
@@ -44,46 +46,40 @@ TABLES['Usuarios'] = ('''
 for tabela_nome in TABLES:
     tabela_sql = TABLES[tabela_nome]
     try:
-        print('Criando tabela {}:'.format(tabela_nome), end=' ')
+        print(f'Criando tabela {tabela_nome}', end=' ')
         cursor.execute(tabela_sql)
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                print('Já existe')
+            print('Já existe')
         else:
-                print(err.msg)
+            print(err.msg)
     else:
-            print('OK')
+        print('OK')
 
 # inserindo usuarios
 usuario_sql = 'INSERT INTO usuarios (nome, nickname, senha) VALUES (%s, %s, %s)'
 usuarios = [
-    ("user1", "BD", "alohomora"),
-    ("Camila Ferreir", "Mila", "paozinho"),
-    ("Guilherme Louro", "Cake", "python_eh_vida")
+    ("admin", "admin", "admin"),
+    ("user", "user", "user")
 ]
 cursor.executemany(usuario_sql, usuarios)
 
-cursor.execute('select * from jogoteca.usuarios')
+cursor.execute('select * from catgang.usuarios')
 print(' -------------  Usuários:  -------------')
 for user in cursor.fetchall():
     print(user[1])
 
-# inserindo jogos
-jogos_sql = 'INSERT INTO jogos (nome, categoria, console) VALUES (%s, %s, %s)'
-jogos = [
-    ('Tetris', 'Puzzle', 'Atari'),
-    ('God of War', 'Hack n Slash', 'PS2'),
-    ('Mortal Kombat', 'Luta', 'PS2'),
-    ('Valorant', 'FPS', 'PC'),
-    ('Crash Bandicoot', 'Hack n Slash', 'PS2'),
-    ('Need for Speed', 'Corrida', 'PS2'),
+# inserindo gatos
+gatos_sql = 'INSERT INTO gatos (nome, idade, castracao) VALUES (%s, %s, %s)'
+gatos = [
+    ('nikita', '10', 'True'),
 ]
-cursor.executemany(jogos_sql, jogos)
+cursor.executemany(gatos_sql, gatos)
 
-cursor.execute('select * from jogoteca.jogos')
-print(' -------------  Jogos:  -------------')
-for jogo in cursor.fetchall():
-    print(jogo[1])
+cursor.execute('select * from catgang.gatos')
+print(' -------------  gatos:  -------------')
+for gato in cursor.fetchall():
+    print(gato[1])
 
 # commitando se não nada tem efeito
 conn.commit()
