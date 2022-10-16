@@ -1,36 +1,6 @@
-from flask import Flask, flash, render_template, request, redirect, session, url_for
-from flask_sqlalchemy import SQLAlchemy
-
-app = Flask(__name__)
-app.secret_key = 'miau'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = \
-    '{SGBD}://{usuario}:{senha}@{servidor}/{database}'.format(
-        SGBD = 'mysql+mysqlconnector',
-        usuario = 'root',
-        senha = 'root',
-        servidor = 'localhost',
-        database = 'catgang'
-    )
-
-db = SQLAlchemy(app)
-
-class Gatos(db.Model):
-    id = db.Column(db.Integer, primary_key= True, autoincrement=True)
-    nome = db.Column(db.String(50), nullable=False)
-    idade = db.Column(db.String(2), nullable=False)
-    castracao = db.Column(db.String(5), nullable=False)
-    
-    def __repr__(self) -> str:
-        return '<Name %r>' % self.name
-
-class Usuarios(db.Model):
-    nickname = db.Column(db.String(8), primary_key= True)
-    nome = db.Column(db.String(20), nullable=False)
-    senha = db.Column(db.String(100), nullable=False)
-    
-    def __repr__(self) -> str:
-        return '<Name %r>' % self.name
+from flask import flash, render_template, request, redirect, session, url_for
+from app import app, db
+from models import Gatos, Usuarios
 
 
 @app.route('/')
@@ -88,6 +58,3 @@ def logout():
 @app.route('/<name>') #404
 def print_name(name):
     return render_template('404.html')
-
-# trecho da app
-app.run(host='0.0.0.0', port=8080, debug=True)
