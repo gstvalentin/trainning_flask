@@ -9,15 +9,15 @@ def index():
     lista = Gatos.query.order_by(Gatos.id)
     return render_template('lista.html', titulo='Crazy Cat Gang', gatos=lista)
 
-@app.route('/novo')
+@app.route('/novo') #leva pra rota de cadastro
 def novo():
-    if 'usuario_logado' not in session or session['usuario_logado'] == None:
+    if 'usuario_logado' not in session or session['usuario_logado'] == None: #valida se usuario está logado e mantem rota após login
         return redirect(url_for('login', proxima=url_for('novo')))
     return render_template('novo.html', titulo='Novo Cadastro')
 
 # ---------------- POST METHOD ---------------------
 
-@app.route('/criar', methods=['POST',])
+@app.route('/criar', methods=['POST',]) #pegando dados e iserindo da db
 def criar():
     nome  = request.form['nome']
     idade = request.form['idade']
@@ -42,9 +42,9 @@ def criar():
 def imagem(nome_arquivo):
     return send_from_directory('uploads', nome_arquivo)
 
-#! -------------------- PUT METHOD --------------------- EDITAR PARA FICAR PUT METHOD
+# -------------------- PUT METHOD --------------------- 
 
-@app.route('/editar/<int:id>')
+@app.route('/editar/<int:id>') #Valida login e apresenta edição de cadastro
 def editar(id):
     if 'usuario_logado' not in session or session['usuario_logado'] == None:
         return redirect(url_for('login', proxima=url_for('editar')))
@@ -53,7 +53,7 @@ def editar(id):
     foto_gato = recupera_img(id)
     return render_template('editar.html', titulo=titulo, gato=gato, foto_gato=foto_gato)
 
-@app.route('/atualizar', methods=['POST',])
+@app.route('/atualizar', methods=['POST',]) #User consegue atualizar utilizando method POST
 def atualizar():
     gato = Gatos.query.filter_by(id=request.form['id']).first()
     gato.nome = request.form['nome']
@@ -71,7 +71,19 @@ def atualizar():
     
     return redirect(url_for('index'))
 
-#! ------------------ DELETE METHOD ----------------------- USAR DELETE METHOD
+@app.route('/update/<int:id>', methods=['PUT',]) #? PUT method só utilizavel pelo postman
+def atualiza_dados(id):
+    gato = Gatos.query.filter_by(id=id).first()
+    gato.nome = request.form['nome']
+    gato.idade = request.form['idade']
+    gato.castracao = request.form['castracao']
+    
+    db.session.add(gato)
+    db.session.commit()
+    
+    return f'O gato {gato.nome} foi atualizado!'
+
+# ------------------ DELETE METHOD -----------------------
 
 @app.route('/deletar/<int:id>')# methods=['POST', 'DELETE']
 def deletar(id):
@@ -83,6 +95,17 @@ def deletar(id):
     Gatos.query.filter_by(id=id).delete()
     db.session.commit()
     return redirect(url_for('index'))
+    
+@app.route('/delete/<int:id>', methods=['PUT','DELETE']) #? DELETE SÓ PELO POSTMAN
+def deleta_gato(id):
+    # if 'usuario_logado' not in session or session['usuario_logado'] == None: #!estudar como colocar autenticação direto na api
+    #     return redirect(url_for('login')) 
+    if request.method == 'DELETE':
+        gato = Gatos.query.filter_by(id=id).first()
+        db.session.delete(gato)
+        db.session.commit()
+        return f'Cadastro do gato {gato.nome.capitalize()} foi deletado!'
+
 
 # --------------------- GET METHOD ----------------------
 @app.route('/gatosapi', methods=['GET'])

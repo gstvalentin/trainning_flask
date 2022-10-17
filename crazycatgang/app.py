@@ -5,7 +5,7 @@ app = Flask(__name__)
 app.config.from_pyfile('config.py') #import configs
 db = SQLAlchemy(app) #conecta a db
 
-from views import * #importa as routes
+from views import * #importa views
 
 # trecho da app
 if __name__ == '__main__':

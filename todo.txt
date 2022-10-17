@@ -1,7 +1,5 @@
 
 
-GET, PUT, DELETE METHODS
-colocar comentarios
 escrever o que a aplicação faz 
 
 

@@ -13,10 +13,3 @@ $('form input[type="file"]').change(event => {
     }
 }
 });
-
-$(".delete").restintag(optionsObj, function(data) {
-    console.log(data);
-},
-function(error) {
-    console.log(error);
-});
