@@ -2,8 +2,8 @@ from distutils.command.config import config
 from flask import flash, render_template, request, redirect, session, url_for, send_from_directory
 from app import app, db
 from models import Gatos, Usuarios
-from helpers import recupera_img
-
+from helpers import recupera_img, deleta_arquivo
+import time
 
 @app.route('/')
 def index():
@@ -33,7 +33,8 @@ def criar():
     
     arquivo = request.files['arquivo']
     uploads_path = app.config['UPLOAD_PATH']
-    arquivo.save(f'{uploads_path}/Foto_{novo_gato.id}.jpg')
+    timestamp = time.time()
+    arquivo.save(f'{uploads_path}/Foto_{novo_gato.id}-{timestamp}.jpg')
     return redirect(url_for('index'))
 
 @app.route('/uploads/<nome_arquivo>')
@@ -57,12 +58,15 @@ def atualizar():
     gato.nome = request.form['nome']
     gato.idade = request.form['idade']
     gato.castracao = request.form['castracao']
+    
     db.session.add(gato)
     db.session.commit()
     
     arquivo = request.files['arquivo']
     uploads_path = app.config['UPLOAD_PATH']
-    arquivo.save(f'{uploads_path}/Foto_{gato.id}.jpg')
+    timestamp = time.time()
+    deleta_arquivo(gato.id)
+    arquivo.save(f'{uploads_path}/Foto_{gato.id}-{timestamp}.jpg')
     
     return redirect(url_for('index'))
 
