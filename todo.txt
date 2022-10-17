@@ -1,9 +1,3 @@
-
-
-escrever o que a aplicação faz 
-
-
-
 use mysql-connector-python invés de mysql-connector
 
 vulnerabilidade de poder andar pelos gatos pelo ID
