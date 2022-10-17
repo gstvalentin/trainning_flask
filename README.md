@@ -25,5 +25,8 @@ You can also GET, POST, PUT and DELETE using API calls with postman
 
 
 ------
+try some 404 errors xD 
 
 Have fun and let me know where i can improve!
+
+
