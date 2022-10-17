@@ -2,3 +2,5 @@ terminar
 criar get para sair como json
 
 mysql-connector-python
+
+vulnerabilidade de poder andar pelos gatos pelo ID
