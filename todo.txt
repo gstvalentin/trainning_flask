@@ -1,5 +1,10 @@
-terminar
-criar get para sair como json
+
+
+GET, PUT, DELETE METHODS
+
+escrever o que a aplicação faz 
+
+
 
 mysql-connector-python
 

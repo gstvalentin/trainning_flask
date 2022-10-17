@@ -14,7 +14,7 @@ def index():
 def novo():
     if 'usuario_logado' not in session or session['usuario_logado'] == None:
         return redirect(url_for('login', proxima=url_for('novo')))
-    return render_template('novo.html', titulo='Novo Jogo')
+    return render_template('novo.html', titulo='Novo Cadastro')
 
 @app.route('/criar', methods=['POST',])
 def criar():
@@ -62,11 +62,11 @@ def atualizar():
     db.session.add(gato)
     db.session.commit()
     
-    arquivo = request.files['arquivo']
-    uploads_path = app.config['UPLOAD_PATH']
-    timestamp = time.time()
-    deleta_arquivo(gato.id)
-    arquivo.save(f'{uploads_path}/Foto_{gato.id}-{timestamp}.jpg')
+    arquivo = request.files['arquivo'] #request img do arquivo editar.html
+    uploads_path = app.config['UPLOAD_PATH'] #path da pasta uploads
+    timestamp = time.time() #secs para dar id unico para as imgs
+    deleta_arquivo(gato.id) #deleta a img antiga antes de inserir a nova
+    arquivo.save(f'{uploads_path}/Foto_{gato.id}-{timestamp}.jpg') #salva a nova img no path desejado
     
     return redirect(url_for('index'))
 
