@@ -42,6 +42,22 @@ def criar():
 def imagem(nome_arquivo):
     return send_from_directory('uploads', nome_arquivo)
 
+@app.route('/post', methods=['POST']) #POST com api 
+def criar_post():
+    nome  = request.form['nome']
+    idade = request.form['idade']
+    castracao = request.form['castracao']
+    
+    gato = Gatos.query.filter_by(nome=nome).first() #True or False | se já existe gato com mesmo nome
+    if gato:
+        return f'Gato já adicionado!'
+    
+    novo_gato = Gatos(nome=nome, idade=idade, castracao=castracao) #guarda os inputs
+    db.session.add(novo_gato) #add os inputs
+    db.session.commit() # commit e leva para db
+    
+    return f'Novo gato {nome} adicionado!'
+
 # -------------------- PUT METHOD --------------------- 
 
 @app.route('/editar/<int:id>') #Valida login e apresenta edição de cadastro
