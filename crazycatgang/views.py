@@ -1,5 +1,4 @@
-from distutils.command.config import config
-from flask import flash, render_template, request, redirect, session, url_for, send_from_directory
+from flask import flash, render_template, request, redirect, session, url_for, send_from_directory, jsonify
 from app import app, db
 from models import Gatos, Usuarios
 from helpers import recupera_img, deleta_arquivo
@@ -15,6 +14,8 @@ def novo():
     if 'usuario_logado' not in session or session['usuario_logado'] == None:
         return redirect(url_for('login', proxima=url_for('novo')))
     return render_template('novo.html', titulo='Novo Cadastro')
+
+# ---------------- POST METHOD ---------------------
 
 @app.route('/criar', methods=['POST',])
 def criar():
@@ -72,16 +73,28 @@ def atualizar():
 
 #! ------------------ DELETE METHOD ----------------------- USAR DELETE METHOD
 
-@app.route('/deletar/<int:id>')
+@app.route('/deletar/<int:id>')# methods=['POST', 'DELETE']
 def deletar(id):
     if 'usuario_logado' not in session or session['usuario_logado'] == None:
         return redirect(url_for('login'))
+    # if request.method == 'DELETE':
     gato = Gatos.query.filter_by(id=id).first()
     flash(f'Cadastro do gato {gato.nome.capitalize()} foi deletado!')
     Gatos.query.filter_by(id=id).delete()
     db.session.commit()
     return redirect(url_for('index'))
 
+# --------------------- GET METHOD ----------------------
+@app.route('/gatosapi', methods=['GET'])
+def retorna_gatos():
+    lista = Gatos.query.order_by(Gatos.id)
+    api = []
+    conteudo = {}
+    for gato in lista:
+        conteudo = {'id': gato.id, 'nome': gato.nome, 'idade': gato.idade, 'castracao': gato.castracao}
+        api.append(conteudo)
+        conteudo = {}
+    return jsonify(api)
 
 
 # -------------------- USER LOGIN ------------------

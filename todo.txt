@@ -1,11 +1,17 @@
 
 
 GET, PUT, DELETE METHODS
-
+colocar comentarios
 escrever o que a aplicação faz 
 
 
 
-mysql-connector-python
+use mysql-connector-python invés de mysql-connector
 
 vulnerabilidade de poder andar pelos gatos pelo ID
+Não tem validação de input vazio
+Não tem validação de qtd de char 
+Não tem validação de tipo de char
+salva foto vazia se user não incluir foto
+Não tem criptografia para senha
+framework e versão visivel
