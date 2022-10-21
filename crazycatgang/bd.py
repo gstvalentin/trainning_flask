@@ -72,7 +72,11 @@ for user in cursor.fetchall():
 # inserindo gatos
 gatos_sql = 'INSERT INTO gatos (nome, idade, castracao) VALUES (%s, %s, %s)'
 gatos = [
-    ('nikita', '10', 'True'),
+    ('chicoria', '1', 'True'),
+    ('Feijoada', '3', 'False'),
+    ('Lentilha', '4', 'True'),
+    ('Maria FiFi', '6', 'False'),
+    ('Nininho', '10', 'True'),
 ]
 cursor.executemany(gatos_sql, gatos)
 

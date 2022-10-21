@@ -63,7 +63,7 @@ def criar_post():
 @app.route('/editar/<int:id>') #Valida login e apresenta edição de cadastro
 def editar(id):
     if 'usuario_logado' not in session or session['usuario_logado'] == None:
-        return redirect(url_for('login', proxima=url_for('editar')))
+        return redirect(url_for('login'))
     gato = Gatos.query.filter_by(id=id).first()
     titulo = f'Você está editando os dados do seguinte gatinho: {gato.nome.capitalize()}'
     foto_gato = recupera_img(id)

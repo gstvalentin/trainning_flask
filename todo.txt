@@ -7,3 +7,7 @@ Não tem validação de tipo de char
 salva foto vazia se user não incluir foto
 Não tem criptografia para senha
 framework e versão visivel
+
+
+readme mostrando que pode usar as fotos dos gatos para editar os exitentes
+colocar docker
