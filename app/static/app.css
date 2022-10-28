@@ -45,10 +45,6 @@ td {
     text-align: center;
 }
 
-/* .formularioJogo {
-    display: flex;
-} */
-
 .formularioImagem {
     margin-right: 16px
 }
@@ -60,9 +56,3 @@ td {
 .inputBox {
     width: 700px;
 }
-
-/* .inputsJogo {
-    width: 100%;
-    margin-left: 1em;
-    margin-bottom: 1em;
-} */

@@ -9,8 +9,8 @@ SQLALCHEMY_DATABASE_URI = \
         SGBD = 'mysql+mysqlconnector',
         usuario = 'root',
         senha = 'root',
-        servidor = 'localhost',
-        database = 'catgang'
+        servidor = 'mysql',
+        database = 'db'
     )
 
 

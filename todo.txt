@@ -14,3 +14,8 @@ usar docker compose
     rodar requirements
     abrir ports
     rodar app
+
+autoscape ver como funciona
+
+arrumar session para n ter sequestro de cookie
+app.config['SESSION_COOKIE_HTTPONLY'] = False
