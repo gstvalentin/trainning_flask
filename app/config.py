@@ -9,8 +9,8 @@ SQLALCHEMY_DATABASE_URI = \
         SGBD = 'mysql+mysqlconnector',
         usuario = 'root',
         senha = 'root',
-        servidor = 'mysql',
-        database = 'db'
+        servidor = 'mysql-flask-app-container',
+        database = 'catgang'
     )
 
 
