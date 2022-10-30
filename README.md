@@ -16,9 +16,16 @@ senha: admin
 
 ## To run
 
-1) install packages from "requirements.txt" with pip
-2) Run "bd.py" file
-3) Run "app.py" file and go to http://locahost:8080
+- Install Docker
+- To start ```docker-compose up```
+- To stop ```docker-compose down```
+- To build and change something in code ```docker-compose build```
+------
+- Web App runs at port 8085
+
+```http://localhost:8085```
+
+- MySQL DB runs at 32000
 
 ------
 
