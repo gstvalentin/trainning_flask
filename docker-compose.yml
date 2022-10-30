@@ -1,28 +1,30 @@
-version: "3.8"
+version: "3.4"
 
 services:
-  python-flask-app-container:
+  app:
     build: ./app
     container_name: python-flask-app-container
+    links:
+    - db
     ports:
-      - 5002:5000
+      - "8085:5000"
     volumes:
       - ./app:/app/
     networks:
       - mysql-python-app-network
   
-  mysql-flask-app-container:
-    image: mysql:8.0.28
+  db:
+    image: mysql:8.0
     container_name: mysql-flask-app-container
     ports:
-      - 3309:3306
+      - "32000:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
     volumes:
-      - mysql-python-app-volume:/var/lib/mysql
-      - mysql-python-app-volume-config:/etc/mysql
+      - ./db:/docker-entrypoint-initdb.d/:ro
     networks:
       - mysql-python-app-network
+
 networks:
   mysql-python-app-network:
     name: mysql-python-app-network
