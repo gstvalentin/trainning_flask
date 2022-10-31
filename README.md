@@ -9,7 +9,7 @@ Pelo User interface, é possível criar, editar e deletar os cadastros. É poss�
 
 Para realizar as alterações é necessário fazer o login:
 
-Usuário: admin
+Usuário: admin \
 senha: admin
 
 ------
