@@ -8,13 +8,6 @@ salva foto vazia se user não incluir foto
 Não tem criptografia para senha
 framework e versão visivel
 
-
-usar docker compose
-    rodar bd
-    rodar requirements
-    abrir ports
-    rodar app
-
 autoscape ver como funciona
 
 arrumar session para n ter sequestro de cookie
