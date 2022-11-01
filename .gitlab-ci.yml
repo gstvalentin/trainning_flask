@@ -1,0 +1,4 @@
+tarefa1:
+  script:
+  - echo "hi"
+  - echo date
