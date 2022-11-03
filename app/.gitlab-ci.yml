@@ -28,8 +28,8 @@ build-docker:
 
 build:
   stage: build
-  tags:
-    - executor-tarefas
+  # tags:
+  #   - executor-tarefas
   dependencies:
     - build-docker
   script:
