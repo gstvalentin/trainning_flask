@@ -44,9 +44,9 @@ build:
     SECRET_KEY: $DB_SECRET_KEY
   dependencies:
     - build-docker
-  # script:
-  #   - python ./app/app.py makemigrations
-  #   - python ./app/app.py migrate
+  script:
+    - python ./app/config.py makemigrations
+    - python ./app/config.py migrate
 
 
 # deploy:
