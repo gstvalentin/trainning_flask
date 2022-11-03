@@ -3,6 +3,7 @@ image: docker:stable
 stages:
   - build-docker
   - build
+  - deploy
   # - Source Composition Analysis
   # - Static Application Security Testing
   # - Dynamic Application Security Testing 
@@ -27,6 +28,8 @@ build:
     - docker:dind
     - mysql:8.0
   image: $CI_REGISTRY_USER/catgang:latest
+  tags:
+    - executor-tarefas
   variables:
     MYSQL_USER: $DB_USER
     MYSQL_PASSWORD: $DB_PASSWORD
@@ -41,12 +44,14 @@ build:
     SECRET_KEY: $DB_SECRET_KEY
   dependencies:
     - build-docker
-  script:
-    - python ./app/app.py makemigrations
-    - python ./app/app.py migrate
+  # script:
+  #   - python ./app/app.py makemigrations
+  #   - python ./app/app.py migrate
 
 
-
+deploy:
+  stage: deploy
+  script: tar cfz arquivos.tgz *
 
 
 
