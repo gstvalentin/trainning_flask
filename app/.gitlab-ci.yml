@@ -1,7 +1,7 @@
 image: docker:stable
 
 stages:
-  - Pre-build
+  - Prebuild
   # - Source Composition Analysis
   # - Static Application Security Testing
   # - Dynamic Application Security Testing 
@@ -10,7 +10,7 @@ stages:
 services:
   - docker:dind
 
-Pre-build:
+Prebuild:
   # image: docker:stable
   stage: Build
   
