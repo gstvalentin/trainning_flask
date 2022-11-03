@@ -49,9 +49,9 @@ build:
   #   - python ./app/app.py migrate
 
 
-deploy:
-  stage: deploy
-  script: tar cfz arquivos.tgz *
+# deploy:
+#   stage: deploy
+#   script: tar cfz arquivos.tgz *
 
 
 
