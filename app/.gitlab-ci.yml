@@ -1,7 +1,8 @@
 image: docker:stable
 
 stages:
-  - Pre-build
+  - build-docker
+  - build
   # - Source Composition Analysis
   # - Static Application Security Testing
   # - Dynamic Application Security Testing 
@@ -10,9 +11,9 @@ stages:
 services:
   - docker:dind
 
-Pre-build:
+build-docker:
   # image: docker:stable
-  stage: Pre-build
+  stage: build-docker
   
 
   variables:
@@ -29,6 +30,8 @@ build:
   stage: build
   tags:
     - executor-tarefas
+  dependencies:
+    - build-docker
   script:
     - echo "hey bi"
 
