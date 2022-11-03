@@ -9,11 +9,13 @@ stages:
 
 
 services:
-  - docker:dind 
+  - ./app/docker:dind
+  # - dockerfile:./app/Dockerfile
 
 build:
   image: docker:latest
   stage: Build
+  
 
   variables:
     IMAGE: ${CI_REGISTRY_USER}/catgang:latest
