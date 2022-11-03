@@ -9,7 +9,7 @@ services:
     ports:
       - "8085:5000"
     volumes:
-      - ./app:/app/
+      - ./app:/app
     networks:
       - mysql-python-app-network
   
