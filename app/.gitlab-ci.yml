@@ -9,8 +9,7 @@ stages:
 
 
 services:
-  - ./app/docker:dind
-  # - dockerfile:./app/Dockerfile
+  - docker:dind
 
 build:
   image: docker:latest
