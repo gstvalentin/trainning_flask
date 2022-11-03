@@ -42,8 +42,8 @@ build:
   dependencies:
     - build-docker
   script:
-    - python app.py makemigrations
-    - python app.py migrate
+    - python ./app/app.py makemigrations
+    - python ./app/app.py migrate
 
 
 
