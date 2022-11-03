@@ -22,7 +22,7 @@ Prebuild:
       - docker info
       - docker build -t $CI_REGISTRY_USER/catgang:latest ./app
       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-      - docker tag catgang $CI_REGISTRY_USER/catgang:latest
+      # - docker tag catgang $CI_REGISTRY_USER/catgang:latest
       - docker push $CI_REGISTRY_USER/catgang:latest
 
 
