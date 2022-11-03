@@ -12,28 +12,43 @@ services:
   - docker:dind
 
 build-docker:
-  # image: docker:stable
   stage: build-docker
-  
-
   variables:
-    IMAGE: $CI_REGISTRY_USER/catgang:latest
-
+    image: $CI_REGISTRY_USER/catgang:latest
   script:
       - docker info
       - docker build -t $CI_REGISTRY_USER/catgang:latest ./app
       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-      # - docker tag catgang $CI_REGISTRY_USER/catgang:latest
       - docker push $CI_REGISTRY_USER/catgang:latest
 
 build:
   stage: build
-  # tags:
-  #   - executor-tarefas
+  services:
+    - docker:dind
+    - mysql:8.0
+  image: $CI_REGISTRY_USER/catgang:latest
+  variables:
+    MYSQL_USER: $DB_USER
+    MYSQL_PASSWORD: $DB_PASSWORD
+    MYSQL_DATABASE: $DB_DATABASE
+    MYSQL_ROOT_PASSWORD: $DB_ROOT_PASSWORD
+
+    DB_NAME: $DB_DATABASE
+    DB_USER: $DB_USER
+    DB_PASSWORD: $DB_PASSWORD
+    DB_PORT: '3306'
+    DB_HOST: 'db'
+    SECRET_KEY: $DB_SECRET_KEY
   dependencies:
     - build-docker
   script:
-    - echo "hey bi"
+    - python app.py makemigrations
+    - python app.py migrate
+
+
+
+
+
 
 # dependencycheck:
 #   stage: Source Composition Analysis
