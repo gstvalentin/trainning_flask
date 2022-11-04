@@ -6,8 +6,8 @@ stages:
   - deploy
   - Source Composition Analysis
   - Static Application Security Testing
-  # - Dynamic Application Security Testing 
-  # - Deploy
+  - Dynamic Application Security Testing 
+  - Deploy
 
 services:
   - docker:dind
@@ -47,18 +47,15 @@ build:
     - python ./app/config.py migrate
 
 
-# deploy:
-#   stage: deploy
-#   script: tar cfz arquivos.tgz *
 
-dependencycheck:
-  stage: Source Composition Analysis
-  script:
-    - pip install safety
-    - safety check -r requirements.txt --json > safety-results.json 
-  artifacts:
-    paths: [safety-results.json]
-    when: always 
+# dependencycheck:
+#   stage: Source Composition Analysis
+#   script:
+#     - pip install safety
+#     - safety check -r ./app/requirements.txt --json > safety-results.json 
+#   artifacts:
+#     paths: [safety-results.json]
+#     when: always 
 
 
 # owasp:
@@ -110,6 +107,9 @@ snyk:
 
 
 
+# deploy:
+#   stage: deploy
+#   script: tar cfz arquivos.tgz *
 
 # deploy:
 #   image: ubuntu:latest
