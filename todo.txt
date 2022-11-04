@@ -12,3 +12,8 @@ autoscape ver como funciona
 
 arrumar session para n ter sequestro de cookie
 app.config['SESSION_COOKIE_HTTPONLY'] = False
+
+ssh gitlab e github ubuntu
+runners
+docker-compose
+deploy aplicação

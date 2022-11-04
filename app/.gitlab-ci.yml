@@ -4,8 +4,8 @@ stages:
   - build-docker
   - build
   - deploy
-  # - Source Composition Analysis
-  # - Static Application Security Testing
+  - Source Composition Analysis
+  - Static Application Security Testing
   # - Dynamic Application Security Testing 
   # - Deploy
 
@@ -28,8 +28,6 @@ build:
     - docker:dind
     - mysql:8.0
   image: $CI_REGISTRY_USER/catgang:latest
-  tags:
-    - executor-tarefas
   variables:
     MYSQL_USER: $DB_USER
     MYSQL_PASSWORD: $DB_PASSWORD
@@ -53,28 +51,24 @@ build:
 #   stage: deploy
 #   script: tar cfz arquivos.tgz *
 
-
-
-# dependencycheck:
-#   stage: Source Composition Analysis
-#   script:
-#     - pip install safety
-#     - safety check -r requirements.txt --json > safety-results.json 
-#   artifacts:
-#     paths: [safety-results.json]
-#     when: always 
+dependencycheck:
+  stage: Source Composition Analysis
+  script:
+    - pip install safety
+    - safety check -r ./app/requirements.txt --json > safety-results.json 
+  artifacts:
+    paths: [safety-results.json]
+    when: always 
 
 
 # owasp:
 #   image: docker:latest
 #   stage: Dynamic Application Security Testing
-  
-
 #   script:
 #     - echo 'hello!'
 #     - ls
 #     - docker run -v $(pwd):/zap/wrk -u $(id -u ${USER}):$(id -g ${USER}) -t owasp/zap2docker-stable zap-baseline.py -t ${URL2} -J report_json
-#   artifacts:
+#   artifacts: #! VARIAVEL
 #     when: always
 #     paths: [report_json.json]
 #   allow_failure: true
@@ -89,30 +83,30 @@ build:
 #     - echo "send message to telegram!"
 
 
-# bandit:
-#   stage: Static Application Security Testing
-#   script:
-#     - pip install -r requirements.txt
-#     - pip install bandit
-#     - 'bandit -r app.py -f json -o bandit-output.json'
-#   artifacts:
-#     when: always
-#     paths: [bandit-output.json]
-#   allow_failure: true
+bandit:
+  stage: Static Application Security Testing
+  script:
+    - pip install -r ./app/requirements.txt
+    - pip install bandit
+    - 'bandit -r ./app/app.py -f json -o bandit-output.json'
+  artifacts:
+    when: always
+    paths: [bandit-output.json]
+  allow_failure: true
 
-# snyk:
-#   stage: Static Application Security Testing
-#   script:
-#     - pip install -r requirements.txt
-#     - wget https://github.com/snyk/snyk/releases/download/v1.204.0/snyk-linux
-#     - mv snyk-linux snyk && chmod +x snyk
-#     - ./snyk auth ${SNYK2_TOKEN}
-#     - ./snyk test --json > snyk-results.json
-#   artifacts:
-#     when: always
-#     paths:
-#     - snyk-results.json
-#   allow_failure: true
+snyk:
+  stage: Static Application Security Testing
+  script:
+    - pip install -r ./app/requirements.txt
+    - wget https://github.com/snyk/snyk/releases/download/v1.204.0/snyk-linux
+    - mv snyk-linux snyk && chmod +x snyk
+    - ./snyk auth ${SNYK2_TOKEN} #! VARIAVEL
+    - ./snyk test --json > snyk-results.json
+  artifacts:
+    when: always
+    paths:
+    - snyk-results.json
+  allow_failure: true
 
 
 
