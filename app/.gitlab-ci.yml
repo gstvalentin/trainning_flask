@@ -85,8 +85,8 @@ bandit:
   script:
     - pip install -r ./app/requirements.txt
     - pip install bandit
-    # - 'bandit -r ./app/app.py -f json -o bandit-output.json'
-    - 'bandit -r ./app/views.py -f json -o bandit-output.json'
+    - 'bandit -r ./app/app.py -f json -o bandit-output.json'
+    # - 'bandit -r ./app/views.py -f json -o bandit-output.json'
   artifacts:
     when: always
     paths: [bandit-output.json]
