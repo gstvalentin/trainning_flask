@@ -64,7 +64,7 @@ owasp:
   script:
     - echo 'hello!'
     - ls
-    - docker run -v $(pwd):/zap/wrk -u $(id -u ${USER}):$(id -g ${USER}) -t owasp/zap2docker-stable zap-baseline.py -t $URL2 -J report_json
+    - docker run -v $(pwd):/zap/wrk -u $(id -u $USER):$(id -g $USER) -t owasp/zap2docker-stable zap-baseline.py -t $URL2 -J report_json
   artifacts:
     when: always
     paths: [report_json.json]
