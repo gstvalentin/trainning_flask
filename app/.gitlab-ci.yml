@@ -1,4 +1,4 @@
-image: docker:stable
+image: python:latest
 
 stages:
   - build-docker
@@ -12,39 +12,39 @@ stages:
 services:
   - docker:dind
 
-build-docker:
-  stage: build-docker
-  variables:
-    image: $CI_REGISTRY_USER/catgang:latest
-  script:
-      - docker info
-      - docker build -t $CI_REGISTRY_USER/catgang:latest ./app
-      - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-      - docker push $CI_REGISTRY_USER/catgang:latest
+# build-docker:
+#   stage: build-docker
+#   variables:
+#     image: $CI_REGISTRY_USER/catgang:latest
+#   script:
+#       - docker info
+#       - docker build -t $CI_REGISTRY_USER/catgang:latest ./app
+#       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+#       - docker push $CI_REGISTRY_USER/catgang:latest
 
-build:
-  stage: build
-  services:
-    - docker:dind
-    - mysql:8.0
-  image: $CI_REGISTRY_USER/catgang:latest
-  variables:
-    MYSQL_USER: $DB_USER
-    MYSQL_PASSWORD: $DB_PASSWORD
-    MYSQL_DATABASE: $DB_DATABASE
-    MYSQL_ROOT_PASSWORD: $DB_ROOT_PASSWORD
+# build:
+#   stage: build
+#   services:
+#     - docker:dind
+#     - mysql:8.0
+#   image: $CI_REGISTRY_USER/catgang:latest
+#   variables:
+#     MYSQL_USER: $DB_USER
+#     MYSQL_PASSWORD: $DB_PASSWORD
+#     MYSQL_DATABASE: $DB_DATABASE
+#     MYSQL_ROOT_PASSWORD: $DB_ROOT_PASSWORD
 
-    DB_NAME: $DB_DATABASE
-    DB_USER: $DB_USER
-    DB_PASSWORD: $DB_PASSWORD
-    DB_PORT: '3306'
-    DB_HOST: 'db'
-    SECRET_KEY: $DB_SECRET_KEY
-  dependencies:
-    - build-docker
-  script:
-    - python ./app/config.py makemigrations
-    - python ./app/config.py migrate
+#     DB_NAME: $DB_DATABASE
+#     DB_USER: $DB_USER
+#     DB_PASSWORD: $DB_PASSWORD
+#     DB_PORT: '3306'
+#     DB_HOST: 'db'
+#     SECRET_KEY: $DB_SECRET_KEY
+#   dependencies:
+#     - build-docker
+#   script:
+#     - python ./app/config.py makemigrations
+#     - python ./app/config.py migrate
 
 
 
