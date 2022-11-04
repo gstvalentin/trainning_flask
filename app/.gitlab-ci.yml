@@ -48,14 +48,14 @@ services:
 
 
 
-# dependencycheck:
-#   stage: Source Composition Analysis
-#   script:
-#     - pip install safety
-#     - safety check -r ./app/requirements.txt --json > safety-results.json 
-#   artifacts:
-#     paths: [safety-results.json]
-#     when: always 
+dependencycheck:
+  stage: Source Composition Analysis
+  script:
+    - pip install safety
+    - safety check -r ./app/requirements.txt --json > safety-results.json 
+  artifacts:
+    paths: [safety-results.json]
+    when: always 
 
 
 # owasp:
