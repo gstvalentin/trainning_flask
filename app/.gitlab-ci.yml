@@ -13,6 +13,7 @@ services:
   - docker:dind
 
 build-docker:
+  image: docker:latest
   stage: build-docker
   variables:
     image: $CI_REGISTRY_USER/catgang:latest
@@ -106,7 +107,7 @@ snyk:
     - snyk-results.json
   allow_failure: true
 
-
+#! Como faz o auth token do snyk?
 
 # deploy:
 #   stage: deploy
@@ -125,7 +126,7 @@ snyk:
 #     - ssh-add <(echo "$SSH_PRIVATE_KEY")
 #     - mkdir -p ~/.ssh
 #     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-
+# ! foi num servidor local ou externo? Qual? como?
 #     - echo "Deploy project on server"
 #     - ssh $DEPLOY_HOST "docker pull ${CI_REGISTRY_USER}/catgang:latest"
 #     - ssh $DEPLOY_HOST "docker stop app3"
