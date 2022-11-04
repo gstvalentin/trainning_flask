@@ -48,14 +48,14 @@ services:
 
 
 
-dependencycheck:
-  stage: Source Composition Analysis
-  script:
-    - pip install safety
-    - safety check -r ./app/requirements.txt --json > safety-results.json 
-  artifacts:
-    paths: [safety-results.json]
-    when: always 
+# dependencycheck:
+#   stage: Source Composition Analysis
+#   script:
+#     - pip install safety
+#     - safety check -r ./app/requirements.txt --json > safety-results.json 
+#   artifacts:
+#     paths: [safety-results.json]
+#     when: always 
 
 
 # owasp:
@@ -86,6 +86,7 @@ bandit:
     - pip install -r ./app/requirements.txt
     - pip install bandit
     - 'bandit -r ./app/app.py -f json -o bandit-output.json'
+    - 'bandit -r ./app/views.py -f json -o bandit-output.json'
   artifacts:
     when: always
     paths: [bandit-output.json]
