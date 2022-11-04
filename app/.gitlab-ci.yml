@@ -58,17 +58,17 @@ services:
 #     when: always 
 
 
-# owasp:
-#   image: docker:latest
-#   stage: Dynamic Application Security Testing
-#   script:
-#     - echo 'hello!'
-#     - ls
-#     - docker run -v $(pwd):/zap/wrk -u $(id -u ${USER}):$(id -g ${USER}) -t owasp/zap2docker-stable zap-baseline.py -t ${URL2} -J report_json
-#   artifacts: #! VARIAVEL
-#     when: always
-#     paths: [report_json.json]
-#   allow_failure: true
+owasp:
+  image: docker:latest
+  stage: Dynamic Application Security Testing
+  script:
+    - echo 'hello!'
+    - ls
+    - docker run -v $(pwd):/zap/wrk -u $(id -u ${USER}):$(id -g ${USER}) -t owasp/zap2docker-stable zap-baseline.py -t ${URL2} -J report_json
+  artifacts:
+    when: always
+    paths: [report_json.json]
+  allow_failure: true
 
 
 # alert:
@@ -85,7 +85,7 @@ bandit:
   script:
     - pip install -r ./app/requirements.txt
     - pip install bandit
-    - 'bandit -r ./app/app.py -f json -o bandit-output.json'
+    - 'bandit -r ./app/ -f json -o bandit-output.json'
     # - 'bandit -r ./app/views.py -f json -o bandit-output.json'
   artifacts:
     when: always
