@@ -113,7 +113,7 @@ Deploy:
   image: ubuntu:latest
   stage: Deploy
   tags:
-    - runner-deploy
+    - deploy
   script: 
     - tar cfz arquivos.tgz *
     - scp arquivos.tgz $SSHKEY:/src/deploy/
