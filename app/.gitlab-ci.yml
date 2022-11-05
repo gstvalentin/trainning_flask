@@ -15,8 +15,8 @@ services:
 build-docker:
   image: docker:latest
   stage: build-docker
-  # tags:
-  #   - runner-catgang
+  tags:
+    - runner-catgang
   variables:
     image: $CI_REGISTRY_USER/catgang:latest
   script:
@@ -25,118 +25,122 @@ build-docker:
       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
       - docker push $CI_REGISTRY_USER/catgang:latest
 
-build:
-  stage: build
-  services:
-    - docker:dind
-    - mysql:8.0
-  image: $CI_REGISTRY_USER/catgang:latest
-  variables:
-    MYSQL_USER: $DB_USER
-    MYSQL_PASSWORD: $DB_PASSWORD
-    MYSQL_DATABASE: $DB_DATABASE
-    MYSQL_ROOT_PASSWORD: $DB_ROOT_PASSWORD
+# build:
+#   stage: build
+#   services:
+#     - docker:dind
+#     - mysql:8.0
+#   image: $CI_REGISTRY_USER
+#   variables:
+#     MYSQL_USER: $DB_USER
+#     MYSQL_PASSWORD: $DB_PASSWORD
+#     MYSQL_DATABASE: $DB_DATABASE
+#     MYSQL_ROOT_PASSWORD: $DB_ROOT_PASSWORD
 
-    DB_NAME: $DB_DATABASE
-    DB_USER: $DB_USER
-    DB_PASSWORD: $DB_PASSWORD
-    DB_PORT: '3306'
-    DB_HOST: 'db'
-    SECRET_KEY: $DB_SECRET_KEY
-  dependencies:
-    - build-docker
-  script:
-    - python ./app/config.py makemigrations
-    - python ./app/config.py migrate
-
-
-
-dependencycheck:
-  stage: Source Composition Analysis
-  script:
-    - pip install safety
-    - safety check -r ./app/requirements.txt --json > safety-results.json 
-  artifacts:
-    paths: [safety-results.json]
-    when: always 
-
-
-owasp:
-  image: docker:latest
-  stage: Dynamic Application Security Testing
-  script:
-    - echo 'hello!'
-    - ls
-    - docker run -v $(pwd):/zap/wrk -u $(id -u $USER):$(id -g $USER) -t owasp/zap2docker-stable zap-baseline.py -t $URL2 -J report_json
-  artifacts:
-    when: always
-    paths: [report_json.json]
-  allow_failure: true
-
-
-# alert:
-#   stage: Deploy
-#   after_script:
-#     - chmod +x telegram.sh
-#     - ./telegram.sh
+#     DB_NAME: $DB_DATABASE
+#     DB_USER: $DB_USER
+#     DB_PASSWORD: $DB_PASSWORD
+#     DB_PORT: '3306'
+#     DB_HOST: 'db'
+#     SECRET_KEY: $DB_SECRET_KEY
+#   dependencies:
+#     - build-docker
 #   script:
-#     - echo "send message to telegram!"
-
-
-bandit:
-  stage: Static Application Security Testing
-  script:
-    - pip install -r ./app/requirements.txt
-    - pip install bandit
-    - 'bandit -r ./app/ -f json -o bandit-output.json'
-    # - 'bandit -r ./app/views.py -f json -o bandit-output.json'
-  artifacts:
-    when: always
-    paths: [bandit-output.json]
-  allow_failure: true
-
-snyk:
-  stage: Static Application Security Testing
-  script:
-    - pip install -r ./app/requirements.txt
-    - wget https://github.com/snyk/snyk/releases/download/v1.204.0/snyk-linux
-    - mv snyk-linux snyk && chmod +x snyk
-    - ./snyk auth $SNYK2_TOKEN
-    - ./snyk test --json > snyk-results.json
-  artifacts:
-    when: always
-    paths:
-    - snyk-results.json
-  allow_failure: true
-
-#! Como faz o auth token do snyk?
-
-# deploy:
-#   stage: deploy
-#   tags:
-#     - runner-deploy
-#   script: 
-#     - tar cfz arquivos.tgz *
-#     - 
+#     - python ./app/config.py makemigrations
+#     - python ./app/config.py migrate
 
 
 
-
-# deploy:
-#   image: ubuntu:latest
-#   stage: Deploy
-
+# dependencycheck:
+#   stage: Source Composition Analysis
 #   script:
-#     - 'echo "Building docker!"'
-#     - apt-get update -qq
-#     # Setup SSH deploy keys
-#     - 'which ssh-agent || ( apt-get install -qq openssh-client )'
-#     - eval $(ssh-agent -s)
-#     - ssh-add <(echo "$SSH_PRIVATE_KEY")
-#     - mkdir -p ~/.ssh
-#     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-# ! foi num servidor local ou externo? Qual? como?
-#     - echo "Deploy project on server"
-#     - ssh $DEPLOY_HOST "docker pull ${CI_REGISTRY_USER}/catgang:latest"
-#     - ssh $DEPLOY_HOST "docker stop app3"
-#     - ssh $DEPLOY_HOST "docker run --rm -d --name app3 -p $APP_PORT:$APP_PORT ${CI_REGISTRY_USER}/catgang:latest"
+#     - pip install safety
+#     - safety check -r ./app/requirements.txt --json > safety-results.json 
+#   artifacts:
+#     paths: [safety-results.json]
+#     when: always 
+
+
+# owasp:
+#   image: docker:latest
+#   stage: Dynamic Application Security Testing
+#   script:
+#     - echo 'hello!'
+#     - ls
+#     - docker run -v $(pwd):/zap/wrk -u $(id -u $USER):$(id -g $USER) -t owasp/zap2docker-stable zap-baseline.py -t $URL2 -J report_json
+#   artifacts:
+#     when: always
+#     paths: [report_json.json]
+#   allow_failure: true
+# # ! Por q do USER?
+
+# # alert:
+# #   stage: Deploy
+# #   after_script:
+# #     - chmod +x telegram.sh
+# #     - ./telegram.sh
+# #   script:
+# #     - echo "send message to telegram!"
+
+
+# bandit:
+#   stage: Static Application Security Testing
+#   script:
+#     - pip install -r ./app/requirements.txt
+#     - pip install bandit
+#     - 'bandit -r ./app/ -f json -o bandit-output.json'
+#     # - 'bandit -r ./app/views.py -f json -o bandit-output.json'
+#   artifacts:
+#     when: always
+#     paths: [bandit-output.json]
+#   allow_failure: true
+
+# snyk:
+#   stage: Static Application Security Testing
+#   script:
+#     - pip install -r ./app/requirements.txt
+#     - wget https://github.com/snyk/snyk/releases/download/v1.204.0/snyk-linux
+#     - mv snyk-linux snyk && chmod +x snyk
+#     - ./snyk auth $SNYK2_TOKEN
+#     - ./snyk test --json > snyk-results.json
+#   artifacts:
+#     when: always
+#     paths:
+#     - snyk-results.json
+#   allow_failure: true
+
+# #! Como faz o auth token do snyk?
+
+# # deploy:
+# #   stage: deploy
+# #   tags:
+# #     - runner-deploy
+# #   script: 
+# #     - tar cfz arquivos.tgz *
+# #     - 
+
+
+
+
+# # deploy:
+# #   image: ubuntu:latest
+# #   stage: Deploy
+
+# #   script:
+# #     - 'echo "Building docker!"'
+# #     - apt-get update -qq
+# #     # Setup SSH deploy keys
+# #     - 'which ssh-agent || ( apt-get install -qq openssh-client )'
+# #     - eval $(ssh-agent -s)
+# #     - ssh-add <(echo "$SSH_PRIVATE_KEY")
+# #     - mkdir -p ~/.ssh
+# #     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+# # ! foi num servidor local ou externo? Qual? como?
+# #     - echo "Deploy project on server"
+# #     - ssh $DEPLOY_HOST "docker pull ${CI_REGISTRY_USER}/catgang:latest"
+# #     - ssh $DEPLOY_HOST "docker stop app3"
+# #     - ssh $DEPLOY_HOST "docker run --rm -d --name app3 -p $APP_PORT:$APP_PORT ${CI_REGISTRY_USER}/catgang:latest"
+
+# # digital ocean
+# #aws
+# #open shift
