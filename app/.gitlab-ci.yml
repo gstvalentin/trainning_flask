@@ -12,18 +12,18 @@ stages:
 services:
   - docker:dind
 
-# build-docker:
-#   image: docker:latest
-#   stage: build-docker
-#   tags:
-#     - runner-catgang
-#   variables:
-#     image: $CI_REGISTRY_USER/catgang:latest
-#   script:
-#       - docker info
-#       - docker build -t $CI_REGISTRY_USER/catgang:latest ./app
-#       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-#       - docker push $CI_REGISTRY_USER/catgang:latest
+build-docker:
+  image: docker:stable
+  stage: build-docker
+  tags:
+    - catgang
+  variables:
+    image: $CI_REGISTRY_USER/catgang:latest
+  script:
+      - docker info
+      - docker build -t $CI_REGISTRY_USER/catgang:latest ./app
+      - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+      - docker push $CI_REGISTRY_USER/catgang:latest
 
 # build:
 #   stage: build
@@ -74,13 +74,13 @@ services:
 #   allow_failure: true
 # # ! Por q do USER?
 
-alert:
-  stage: Deploy
-  after_script:
-    - chmod +x telegram.sh
-    - ./telegram.sh
-  script:
-    - echo "send message to telegram!"
+# alert:
+#   stage: Deploy
+#   after_script:
+#     - chmod +x telegram.sh
+#     - ./telegram.sh
+#   script:
+#     - echo "send message to telegram!"
 
 
 # bandit:
@@ -95,19 +95,19 @@ alert:
 #     paths: [bandit-output.json]
 #   allow_failure: true
 
-snyk:
-  stage: Static Application Security Testing
-  script:
-    - pip install -r ./app/requirements.txt
-    - wget https://github.com/snyk/snyk/releases/download/v1.204.0/snyk-linux
-    - mv snyk-linux snyk && chmod +x snyk
-    - ./snyk auth $SNYK2_TOKEN
-    - ./snyk test --json > snyk-results.json
-  artifacts:
-    when: always
-    paths:
-    - snyk-results.json
-  allow_failure: true
+# snyk:
+#   stage: Static Application Security Testing
+#   script:
+#     - pip install -r ./app/requirements.txt
+#     - wget https://github.com/snyk/snyk/releases/download/v1.204.0/snyk-linux
+#     - mv snyk-linux snyk && chmod +x snyk
+#     - ./snyk auth $SNYK2_TOKEN
+#     - ./snyk test --json > snyk-results.json
+#   artifacts:
+#     when: always
+#     paths:
+#     - snyk-results.json
+#   allow_failure: true
 
 # #! Como faz o auth token do snyk?
 
