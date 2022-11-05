@@ -116,8 +116,10 @@ Deploy:
     - deploy
   script: 
     - tar cfz arquivos.tgz *
-    - scp arquivos.tgz $SSHKEY:/src/deploy/
-    - ssh $SSHKEY 'cd /src/deploy/; tar xfz arquivos.tgz; /usr/local/bin/docker-compose up -d'
+    # - scp arquivos.tgz $SSHKEY:/src/deploy/
+    - scp arquivos.tgz root@35.173.129.232:/src/deploy/
+    - ssh root@35.173.129.232 'cd /src/deploy/; tar xfz arquivos.tgz; /usr/local/bin/docker-compose up -d'
+    # - ssh $SSHKEY 'cd /src/deploy/; tar xfz arquivos.tgz; /usr/local/bin/docker-compose up -d'
 
 
 
