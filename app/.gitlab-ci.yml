@@ -117,8 +117,6 @@ Deploy:
   script: 
     - tar cfz arquivos.tgz *
     - scp arquivos.tgz $SSHKEY:/home/ubuntu/deploy
-    # - scp arquivos.tgz root@35.173.129.232:/home/ubuntu/deploy
-    # - ssh root@35.173.129.232 'cd /home/ubuntu/deploy; tar xfz arquivos.tgz; /usr/local/bin/docker-compose up -d'
     - ssh $SSHKEY 'cd /home/ubuntu/deploy; tar xfz arquivos.tgz; /usr/local/bin/docker-compose up -d'
 
 
