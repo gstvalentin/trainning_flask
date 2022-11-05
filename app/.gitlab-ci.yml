@@ -1,4 +1,4 @@
-image: python:latest
+image: docker:stable
 
 stages:
   - build-docker
@@ -12,18 +12,18 @@ stages:
 services:
   - docker:dind
 
-build-docker:
-  image: docker:stable
-  stage: build-docker
-  tags:
-    - catgang
-  variables:
-    image: $CI_REGISTRY_USER/catgang:latest
-  script:
-      - docker info
-      - docker build -t $CI_REGISTRY_USER/catgang:latest ./app
-      - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-      - docker push $CI_REGISTRY_USER/catgang:latest
+# build-docker:
+#   image: docker:stable
+#   stage: build-docker
+#   # tags:
+#   #   - catgang
+#   variables:
+#     image: $CI_REGISTRY_USER/catgang:latest
+#   script:
+#       - docker info
+#       - docker build -t $CI_REGISTRY_USER/catgang:latest ./app
+#       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+#       - docker push $CI_REGISTRY_USER/catgang:latest
 
 # build:
 #   stage: build
@@ -109,15 +109,15 @@ build-docker:
 #     - snyk-results.json
 #   allow_failure: true
 
-# #! Como faz o auth token do snyk?
-
-# # deploy:
-# #   stage: deploy
-# #   tags:
-# #     - runner-deploy
-# #   script: 
-# #     - tar cfz arquivos.tgz *
-# #     - 
+Deploy:
+  image: ubuntu:latest
+  stage: Deploy
+  tags:
+    - runner-deploy
+  script: 
+    - tar cfz arquivos.tgz *
+    - scp arquivos.tgz $SSHKEY:/src/deploy/
+    - ssh $SSHKEY 'cd /src/deploy/; tar xfz arquivos.tgz; /usr/local/bin/docker-compose up -d'
 
 
 
