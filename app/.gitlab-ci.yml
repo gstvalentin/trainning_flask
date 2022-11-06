@@ -109,7 +109,7 @@ Deploy:
     - tar cfz arquivos.tgz *
     - scp arquivos.tgz $SSHKEY:/home/ubuntu/deploy
     - ssh $SSHKEY 'cd /home/ubuntu/deploy; tar xfz arquivos.tgz; /usr/local/bin/docker-compose up -d'
-    - docker run -v $(pwd):/zap/wrk -t owasp/zap/wrk2docker-stable zap-baseline.py -t $URL2 -r report_json.json
+    - /usr/local/bin/docker run -v $(pwd):/zap/wrk -t owasp/zap/wrk2docker-stable zap-baseline.py -t $URL2 -r report_json.json
     - cp /zap/wrk/report_json.json .
   artifacts:
     when: always
