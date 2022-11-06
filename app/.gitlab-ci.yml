@@ -117,9 +117,11 @@ owasp:
   script:
     - echo 'hello!'
     - ls
+    - pwd
     - ssh $SSHKEY 'cd /home/ubuntu/deploy'
-    - mkdir /zap/wrk
-    - docker run -v $(pwd):/zap/wrk -t owasp/zap2docker-stable zap-full-scan.py -t $URL2 -j report_json.json
+    - mkdir $(pwd):/zap/wrk
+    - docker run -v $(pwd):/zap/wrk -t owasp/zap2docker-stable zap-full-scan.py -t $URL2 -J report_json.json
+    - echo $URL2 > /zap/wrk/report_json.json
     - cp /zap/wrk/report_json.json "$PWD"
     - cp report_json.json report_json.json
 
