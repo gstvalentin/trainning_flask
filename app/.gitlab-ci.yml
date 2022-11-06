@@ -112,7 +112,7 @@ Deploy:
 #deploy em ec2 aws
 
 owasp:
-  image: docker:latest
+  image: ubuntu:latest
   stage: Dynamic Application Security Testing
   script:
     - echo 'hello!'
