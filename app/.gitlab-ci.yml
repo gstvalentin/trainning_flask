@@ -98,7 +98,7 @@ Deploy:
     - tar cfz arquivos.tgz *
     - scp arquivos.tgz $SSHKEY:/home/ubuntu/deploy
     - ssh $SSHKEY 'cd /home/ubuntu/deploy; tar xfz arquivos.tgz; /usr/local/bin/docker-compose up -d'
-#deploy em ec2 aws
+#deploy em ec2 aws 
 
 owasp:
   image: ubuntu:latest
