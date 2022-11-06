@@ -93,6 +93,7 @@ snyk:
     - wget https://github.com/snyk/snyk/releases/download/v1.204.0/snyk-linux
     - mv snyk-linux snyk && chmod +x snyk
     - ./snyk auth $SNYK2_TOKEN
+    - ./snyk test ./app/
     - ./snyk test --json > snyk-results.json
   artifacts:
     when: always
@@ -119,11 +120,11 @@ owasp:
     # - ls
     # - apt-get update
     # - ssh $SSHKEY 'cd /home/ubuntu/deploy'
-    # - cd $SSHKEY:/home/ubuntu/deploy
-    - mkdir $(pwd):/zap/wrk
+    - cd $SSHKEY/home/ubuntu/deploy
+    - mkdir $(pwd)/app/zap/wrk
     - pwd
-    - docker run -v $(pwd):/zap/wrk -t owasp/zap/wrk2docker-stable zap-baseline.py -t $URL2 -J report_json.json
-    - cp /zap/wrk/report_json.json .
+    - docker run -v $(pwd)/app/zap/wrk -t owasp/zap/wrk2docker-stable zap-baseline.py -t $URL2 -J report_json.json
+    - cp /app/zap/wrk/report_json.json .
     # - cp report_json.json report_json.json
     # - docker run -v $(pwd):/zap/wrk -u $(id -u $USER):$(id -g $USER) -t owasp/zap/wrk2docker-stable zap-baseline.py -t $URL2 -J report_json
   artifacts:
