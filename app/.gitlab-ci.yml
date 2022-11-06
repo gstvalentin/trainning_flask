@@ -116,16 +116,16 @@ owasp:
   stage: Dynamic Application Security Testing
   script:
     - echo 'hello!'
-    - ls
-    - pwd
     - ssh $SSHKEY 'cd /home/ubuntu/deploy'
-    - mkdir $(pwd):/zap/wrk
-    - docker run -v $(pwd):/zap/wrk -t owasp/zap2docker-stable zap-full-scan.py -t $URL2 -J report_json.json
-    - echo $URL2 > /zap/wrk/report_json.json
-    - cp /zap/wrk/report_json.json "$PWD"
+    - pwd
+    - ls
+    - mkdir $(pwd):/zap
+    - docker run -v $(pwd):/zap -t owasp/zap2docker-stable zap-full-scan.py -t $URL2 -J report_json.json
+    - echo $URL2 > /zap/report_json.json
+    - cp /zap/report_json.json $(pwd)
     - cp report_json.json report_json.json
 
-    # - docker run -v $(pwd):/zap/wrk -u $(id -u $USER):$(id -g $USER) -t owasp/zap2docker-stable zap-baseline.py -t $URL2 -J report_json
+    # - docker run -v $(pwd):/zap -u $(id -u $USER):$(id -g $USER) -t owasp/zap2docker-stable zap-baseline.py -t $URL2 -J report_json
   artifacts:
     name: dast
     when: always
