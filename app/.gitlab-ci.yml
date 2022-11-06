@@ -1,8 +1,8 @@
-image: docker:stable
+image: python:3.10
 
 stages:
   - build-docker
-  - build
+  # - build
   - Source Composition Analysis
   - Static Application Security Testing
   - Deploy
@@ -15,8 +15,7 @@ services:
 build-docker:
   image: docker:stable
   stage: build-docker
-  # tags:
-  #   - catgang
+  retry: 2
   variables:
     image: $CI_REGISTRY_USER/catgang:latest
   script:
@@ -52,7 +51,7 @@ build-docker:
 
 
 dependencycheck:
-  image: python:3.10
+  # image: python:3.10
   stage: Source Composition Analysis
   script:
     - pip install safety
@@ -74,7 +73,7 @@ dependencycheck:
 
 
 bandit:
-  image: python:3.10
+  # image: python:3.10
   stage: Static Application Security Testing
   script:
     - pip install -r ./app/requirements.txt
@@ -87,7 +86,7 @@ bandit:
   allow_failure: true
 
 snyk:
-  image: python:3.10
+  # image: python:3.10
   stage: Static Application Security Testing
   script:
     - pip install -r ./app/requirements.txt
