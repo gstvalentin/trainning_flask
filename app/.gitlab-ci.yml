@@ -118,11 +118,15 @@ owasp:
     - echo 'hello!'
     - ls
     - ssh $SSHKEY 'cd /home/ubuntu/deploy'
-    - docker run -t owasp/zap2docker-stable zap-full-scan.py -t $URL2 -J report_json
+    - docker run -v $(pwd):/zap/wrk -t owasp/zap2docker-stable zap-full-scan.py -t $URL2 -j report_json.json
+    - cp /zap/wrk/report_json.json "$PWD"
+    - cp report_json.json report_json.json
+
     # - docker run -v $(pwd):/zap/wrk -u $(id -u $USER):$(id -g $USER) -t owasp/zap2docker-stable zap-baseline.py -t $URL2 -J report_json
   artifacts:
     when: always
-    paths: [report_json.json]
+    paths: 
+    - report_json.json
   allow_failure: true
 
 # # deploy:
