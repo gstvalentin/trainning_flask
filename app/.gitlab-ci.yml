@@ -93,7 +93,7 @@ snyk:
     - wget https://github.com/snyk/snyk/releases/download/v1.204.0/snyk-linux
     - mv snyk-linux snyk && chmod +x snyk
     - ./snyk auth $SNYK2_TOKEN
-    - ./snyk test ./app/
+    - ./snyk test ./app
     - ./snyk test --json > snyk-results.json
   artifacts:
     when: always
