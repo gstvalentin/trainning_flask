@@ -118,6 +118,7 @@ owasp:
     # - echo 'hello!'
     # - ssh $SSHKEY 'cd /home/ubuntu/deploy'
     # - ls
+    - ssh $SSHKEY 'cd /home/ubuntu/deploy'
     - cd $SSHKEY:/home/ubuntu/deploy
     - mkdir $(pwd):/zap/wrk
     - pwd
