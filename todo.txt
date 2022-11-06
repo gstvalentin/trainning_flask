@@ -7,14 +7,3 @@ Não tem validação de tipo de char
 salva foto vazia se user não incluir foto
 Não tem criptografia para senha
 framework e versão visivel
-
-autoscape ver como funciona
-
-arrumar session para n ter sequestro de cookie
-app.config['SESSION_COOKIE_HTTPONLY'] = False
-
-lançar ec2
-conectar via ssh
-instalar docker e docker-compose
-criar runners no ubuntu
-deploy 
