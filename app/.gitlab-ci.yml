@@ -1,4 +1,4 @@
-image: ubuntu:latest
+image: python:3.10
 
 stages:
   - build-docker
@@ -112,16 +112,16 @@ Deploy:
 #deploy em ec2 aws
 
 owasp:
-  image: ubuntu:latest
+  image: docker:latest
   stage: Dynamic Application Security Testing
   script:
     # - echo 'hello!'
     # - ls
     # - apt-get update
-    - ssh $SSHKEY 'cd /home/ubuntu/deploy'
-    - cd $SSHKEY:/home/ubuntu/deploy
-    - mkdir $(pwd):/zap/wrk
-    - pwd
+    # - ssh $SSHKEY 'cd /home/ubuntu/deploy'
+    # - cd $SSHKEY:/home/ubuntu/deploy
+    # - mkdir $(pwd):/zap/wrk
+    # - pwd
     - docker run -v $(pwd):/zap/wrk -t owasp/zap/wrk2docker-stable zap-baseline.py -t $URL2 -r report_json.json
     - cp /zap/wrk/report_json.json .
     # - cp report_json.json report_json.json
