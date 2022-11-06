@@ -121,7 +121,7 @@ owasp:
     # - echo 'hello!'
     # - ls
     # - apt-get update
-    - ssh $SSHKEY 'cd /home/ubuntu/deploy; pwd; docker run  -t owasp/zap/wrk2docker-stable zap-baseline.py -t $URL2 -J report_json.json; cp report_json.json .''
+    - ssh $SSHKEY 'cd /home/ubuntu/deploy; pwd; docker run  -t owasp/zap/wrk2docker-stable zap-baseline.py -t $URL2 -J report_json.json; cp report_json.json .'
     # - mkdir $(pwd)/app/zap/wrk
     # - pwd
     # -v $(pwd)/app/zap/wrk  /app/zap/wrk
