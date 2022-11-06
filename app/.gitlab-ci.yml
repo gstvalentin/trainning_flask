@@ -12,17 +12,17 @@ stages:
 services:
   - docker:dind
 
-# build-docker:
-#   image: docker:stable
-#   stage: build-docker
-#   retry: 2
-#   variables:
-#     image: $CI_REGISTRY_USER/catgang:latest
-#   script:
-#       - docker info
-#       - docker build -t $CI_REGISTRY_USER/catgang:latest ./app
-#       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-#       - docker push $CI_REGISTRY_USER/catgang:latest
+build-docker:
+  image: docker:stable
+  stage: build-docker
+  retry: 2
+  variables:
+    image: $CI_REGISTRY_USER/catgang:latest
+  script:
+      - docker info
+      - docker build -t $CI_REGISTRY_USER/catgang:latest ./app
+      - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+      - docker push $CI_REGISTRY_USER/catgang:latest
 
 # # build:
 # #   stage: build
@@ -50,15 +50,15 @@ services:
 
 
 
-# dependencycheck:
-#   # image: python:3.10
-#   stage: Source Composition Analysis
-#   script:
-#     - pip install safety
-#     - safety check -r ./app/requirements.txt --json > safety-results.json 
-#   artifacts:
-#     paths: [safety-results.json]
-#     when: always 
+dependencycheck:
+  # image: python:3.10
+  stage: Source Composition Analysis
+  script:
+    - pip install safety
+    - safety check -r ./app/requirements.txt --json > safety-results.json 
+  artifacts:
+    paths: [safety-results.json]
+    when: always 
 
 
 
@@ -72,33 +72,33 @@ services:
 # #     - echo "send message to telegram!"
 
 
-# bandit:
-#   image: python:3.10
-#   stage: Static Application Security Testing
-#   script:
-#     - pip install -r ./app/requirements.txt
-#     - pip install bandit
-#     - 'bandit -r ./app/ -f json -o bandit-output.json'
-#     # - 'bandit -r ./app/views.py -f json -o bandit-output.json'
-#   artifacts:
-#     when: always
-#     paths: [bandit-output.json]
-#   allow_failure: true
+bandit:
+  image: python:3.10
+  stage: Static Application Security Testing
+  script:
+    - pip install -r ./app/requirements.txt
+    - pip install bandit
+    - 'bandit -r ./app/ -f json -o bandit-output.json'
+    # - 'bandit -r ./app/views.py -f json -o bandit-output.json'
+  artifacts:
+    when: always
+    paths: [bandit-output.json]
+  allow_failure: true
 
-# snyk:
-#   image: python:3.10
-#   stage: Static Application Security Testing
-#   script:
-#     - pip install -r ./app/requirements.txt
-#     - wget https://github.com/snyk/snyk/releases/download/v1.204.0/snyk-linux
-#     - mv snyk-linux snyk && chmod +x snyk
-#     - ./snyk auth $SNYK2_TOKEN
-#     - ./snyk test --json > snyk-results.json
-#   artifacts:
-#     when: always
-#     paths:
-#     - snyk-results.json
-#   allow_failure: true
+snyk:
+  image: python:3.10
+  stage: Static Application Security Testing
+  script:
+    - pip install -r ./app/requirements.txt
+    - wget https://github.com/snyk/snyk/releases/download/v1.204.0/snyk-linux
+    - mv snyk-linux snyk && chmod +x snyk
+    - ./snyk auth $SNYK2_TOKEN
+    - ./snyk test --json > snyk-results.json
+  artifacts:
+    when: always
+    paths:
+    - snyk-results.json
+  allow_failure: true
 
 Deploy:
   image: ubuntu:latest
@@ -109,56 +109,25 @@ Deploy:
     - tar cfz arquivos.tgz *
     - scp arquivos.tgz $SSHKEY:/home/ubuntu/deploy
     - ssh $SSHKEY 'cd /home/ubuntu/deploy; tar xfz arquivos.tgz; /usr/local/bin/docker-compose up -d'
-    - /usr/local/bin/docker run -v $(pwd):/zap/wrk -t owasp/zap/wrk2docker-stable zap-baseline.py -t $URL2 -r report_json.json
+#deploy em ec2 aws
+
+owasp:
+  image: docker:latest
+  stage: Dynamic Application Security Testing
+  script:
+    # - echo 'hello!'
+    # - ls
+    # - apt-get update
+    # - ssh $SSHKEY 'cd /home/ubuntu/deploy'
+    # - cd $SSHKEY:/home/ubuntu/deploy
+    - mkdir $(pwd):/zap/wrk
+    - pwd
+    - docker run -v $(pwd):/zap/wrk -t owasp/zap/wrk2docker-stable zap-baseline.py -t $URL2 -J report_json.json
     - cp /zap/wrk/report_json.json .
+    # - cp report_json.json report_json.json
+    # - docker run -v $(pwd):/zap/wrk -u $(id -u $USER):$(id -g $USER) -t owasp/zap/wrk2docker-stable zap-baseline.py -t $URL2 -J report_json
   artifacts:
     when: always
     paths: 
     - report_json.json
   allow_failure: true
-#deploy em ec2 aws
-
-# owasp:
-#   image: docker:latest
-#   stage: Dynamic Application Security Testing
-#   script:
-#     # - echo 'hello!'
-#     # - ls
-#     # - apt-get update
-#     # - ssh $SSHKEY 'cd /home/ubuntu/deploy'
-#     # - cd $SSHKEY:/home/ubuntu/deploy
-#     # - mkdir $(pwd):/zap/wrk
-#     # - pwd
-#     - docker run -v $(pwd):/zap/wrk -t owasp/zap/wrk2docker-stable zap-baseline.py -t $URL2 -r report_json.json
-#     - cp /zap/wrk/report_json.json .
-#     # - cp report_json.json report_json.json
-#   # - docker run -v $(pwd):/zap/wrk -u $(id -u $USER):$(id -g $USER) -t owasp/zap/wrk2docker-stable zap-baseline.py -t $URL2 -J report_json
-#   artifacts:
-#     when: always
-#     paths: 
-#     - report_json.json
-#   allow_failure: true
-
-
-# # deploy:
-# #   image: ubuntu:latest
-# #   stage: Deploy
-
-# #   script:
-# #     - 'echo "Building docker!"'
-# #     - apt-get update -qq
-# #     # Setup SSH deploy keys
-# #     - 'which ssh-agent || ( apt-get install -qq openssh-client )'
-# #     - eval $(ssh-agent -s)
-# #     - ssh-add <(echo "$SSH_PRIVATE_KEY")
-# #     - mkdir -p ~/.ssh
-# #     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-# # ! foi num servidor local ou externo? Qual? como?
-# #     - echo "Deploy project on server"
-# #     - ssh $DEPLOY_HOST "docker pull ${CI_REGISTRY_USER}/catgang:latest"
-# #     - ssh $DEPLOY_HOST "docker stop app3"
-# #     - ssh $DEPLOY_HOST "docker run --rm -d --name app3 -p $APP_PORT:$APP_PORT ${CI_REGISTRY_USER}/catgang:latest"
-
-# # digital ocean
-# #aws
-# #open shift
