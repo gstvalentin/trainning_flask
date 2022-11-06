@@ -124,9 +124,11 @@ owasp:
 
     # - docker run -v $(pwd):/zap/wrk -u $(id -u $USER):$(id -g $USER) -t owasp/zap2docker-stable zap-baseline.py -t $URL2 -J report_json
   artifacts:
+    name: dast
     when: always
-    paths: 
-    - report_json.json
+    paths: [report_json.json]
+    reports:
+      dast: report_json.json
   allow_failure: true
 
 # # deploy:
