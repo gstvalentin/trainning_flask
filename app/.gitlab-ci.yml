@@ -1,4 +1,4 @@
-image: python:3.10
+image: ubuntu:latest
 
 stages:
   - build-docker
@@ -116,8 +116,8 @@ owasp:
   stage: Dynamic Application Security Testing
   script:
     # - echo 'hello!'
-    # - ssh $SSHKEY 'cd /home/ubuntu/deploy'
     # - ls
+    # - apt-get update
     - ssh $SSHKEY 'cd /home/ubuntu/deploy'
     - cd $SSHKEY:/home/ubuntu/deploy
     - mkdir $(pwd):/zap/wrk
@@ -131,21 +131,6 @@ owasp:
     paths: 
     - report_json.json
   allow_failure: true
-
-# owasp:
-#   image: owasp/zap2docker-stable:latest
-#   stage: Dynamic Application Security Testing
-#   before_script:
-#   - mkdir /zap/wrk/
-#   - pwd
-#   # - cp Custom_rules.conf /zap/wrk/
-#   script:
-#   - /zap/zap-full-scan.py -r zap_report.json -t $URL2
-#   - cp /zap/wrk/zap_report.json .
-#   artifacts:
-#     paths:
-#     - zap_report.json
-
 
 
 # # deploy:
