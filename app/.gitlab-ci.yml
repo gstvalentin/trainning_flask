@@ -117,7 +117,7 @@ owasp:
   script:
     - echo 'hello!'
     - ls
-    - ssh $SSHKEY 'cd /home/ubuntu/deploy
+    - ssh $SSHKEY 'cd /home/ubuntu/deploy'
     - docker run -t owasp/zap2docker-stable zap-full-scan.py -t $URL2 -J report_json
     # - docker run -v $(pwd):/zap/wrk -u $(id -u $USER):$(id -g $USER) -t owasp/zap2docker-stable zap-baseline.py -t $URL2 -J report_json
   artifacts:
