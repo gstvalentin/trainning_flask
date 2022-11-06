@@ -111,28 +111,41 @@ Deploy:
     - ssh $SSHKEY 'cd /home/ubuntu/deploy; tar xfz arquivos.tgz; /usr/local/bin/docker-compose up -d'
 #deploy em ec2 aws
 
-owasp:
-  image: ubuntu:latest
-  stage: Dynamic Application Security Testing
-  script:
-    - echo 'hello!'
-    - ssh $SSHKEY 'cd /home/ubuntu/deploy'
-    - pwd
-    - ls
-    - mkdir $(pwd):/zap
-    - docker run -v $(pwd):/zap -t owasp/zap2docker-stable zap-full-scan.py -t $URL2 -J report_json.json
-    - echo $URL2 > /zap/report_json.json
-    - cp /zap/report_json.json $(pwd)
-    - cp report_json.json report_json.json
+# owasp:
+#   image: ubuntu:latest
+#   stage: Dynamic Application Security Testing
+#   script:
+#     - echo 'hello!'
+#     - ssh $SSHKEY 'cd /home/ubuntu/deploy'
+#     - pwd
+#     - ls
+#     - mkdir $(pwd):/zap/wrk
+#     - docker run -v $(pwd):/zap/wrk -t owasp/zap/wrk2docker-stable zap-baseline.py -t $URL2 -J report_json.json
+#     - cp /zap/wrk/report_json.json .
+#     - cp report_json.json report_json.json
 
-    # - docker run -v $(pwd):/zap -u $(id -u $USER):$(id -g $USER) -t owasp/zap2docker-stable zap-baseline.py -t $URL2 -J report_json
+  #   # - docker run -v $(pwd):/zap/wrk -u $(id -u $USER):$(id -g $USER) -t owasp/zap/wrk2docker-stable zap-baseline.py -t $URL2 -J report_json
+  # artifacts:
+  #   when: always
+  #   paths: 
+  #   - report_json.json
+  # allow_failure: true
+
+owasp:
+  image: owasp/zap2docker-stable:latest
+  stage: Dynamic Application Security Testing
+  before_script:
+  - mkdir /zap/wrk/
+  - pwd
+  # - cp Custom_rules.conf /zap/wrk/
+  script:
+  - /zap/zap-full-scan.py -r zap_report.json -t $URL2
+  - cp /zap/wrk/zap_report.json .
   artifacts:
-    name: dast
-    when: always
-    paths: [report_json.json]
-    reports:
-      dast: [report_json.json]
-  allow_failure: true
+    paths:
+    - zap_report.json
+
+
 
 # # deploy:
 # #   image: ubuntu:latest
