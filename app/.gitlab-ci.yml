@@ -30,7 +30,7 @@ build:
   services:
     - docker:dind
     - mysql:8.0
-  image: $CI_REGISTRY_USER
+  image: $CI_REGISTRY_USER/catgang:latest
   variables:
     MYSQL_USER: $DB_USER
     MYSQL_PASSWORD: $DB_PASSWORD
