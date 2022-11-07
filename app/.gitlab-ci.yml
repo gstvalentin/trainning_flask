@@ -12,17 +12,17 @@ stages:
 services:
   - docker:dind
 
-build-docker:
-  image: docker:stable
-  stage: build-docker
-  retry: 2
-  variables:
-    image: $CI_REGISTRY_USER/catgang:latest
-  script:
-      - docker info
-      - docker build -t $CI_REGISTRY_USER/catgang:latest ./app
-      - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-      - docker push $CI_REGISTRY_USER/catgang:latest
+# build-docker:
+#   image: docker:stable
+#   stage: build-docker
+#   retry: 2
+#   variables:
+#     image: $CI_REGISTRY_USER/catgang:latest
+#   script:
+#       - docker info
+#       - docker build -t $CI_REGISTRY_USER/catgang:latest ./app
+#       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+#       - docker push $CI_REGISTRY_USER/catgang:latest
 
 # build:
 #   stage: build
@@ -50,56 +50,56 @@ build-docker:
 
 
 
-dependencycheck:
-  # image: python:3.10
-  stage: Source Composition Analysis
-  retry: 2
-  script:
-    - pip install safety
-    - safety check -r ./app/requirements.txt --json > safety-results.json 
-  artifacts:
-    paths: [safety-results.json]
-    when: always 
+# dependencycheck:
+#   # image: python:3.10
+#   stage: Source Composition Analysis
+#   retry: 2
+#   script:
+#     - pip install safety
+#     - safety check -r ./app/requirements.txt --json > safety-results.json 
+#   artifacts:
+#     paths: [safety-results.json]
+#     when: always 
 
-bandit:
-  image: python:3.10
-  stage: Static Application Security Testing
-  script:
-    - pip install -r ./app/requirements.txt
-    - pip install bandit
-    - 'bandit -r ./app/ -f json -o bandit-output.json'
-    # - 'bandit -r ./app/views.py -f json -o bandit-output.json'
-  artifacts:
-    when: always
-    paths: [bandit-output.json]
-  allow_failure: true
+# bandit:
+#   image: python:3.10
+#   stage: Static Application Security Testing
+#   script:
+#     - pip install -r ./app/requirements.txt
+#     - pip install bandit
+#     - 'bandit -r ./app/ -f json -o bandit-output.json'
+#     # - 'bandit -r ./app/views.py -f json -o bandit-output.json'
+#   artifacts:
+#     when: always
+#     paths: [bandit-output.json]
+#   allow_failure: true
 
-snyk:
-  image: python:3.10
-  stage: Static Application Security Testing
-  script:
-    - pip install -r ./app/requirements.txt
-    - wget https://github.com/snyk/snyk/releases/download/v1.204.0/snyk-linux
-    - mv snyk-linux snyk && chmod +x snyk
-    - ./snyk auth $SNYK2_TOKEN
-    - ./snyk test ./app --json > snyk-results.json
-  artifacts:
-    when: always
-    paths:
-    - snyk-results.json
-  allow_failure: true
+# snyk:
+#   image: python:3.10
+#   stage: Static Application Security Testing
+#   script:
+#     - pip install -r ./app/requirements.txt
+#     - wget https://github.com/snyk/snyk/releases/download/v1.204.0/snyk-linux
+#     - mv snyk-linux snyk && chmod +x snyk
+#     - ./snyk auth $SNYK2_TOKEN
+#     - ./snyk test ./app --json > snyk-results.json
+#   artifacts:
+#     when: always
+#     paths:
+#     - snyk-results.json
+#   allow_failure: true
 
-Deploy:
-  image: ubuntu:latest
-  stage: Deploy
-  tags:
-    - localvmdeploy
-  script: 
-    - tar cfz arquivos.tgz *
-    - ssh $SSHKEY 'mkdir -p ../home/kali/Documents/deploy'
-    - scp arquivos.tgz $SSHKEY:../home/kali/Documents/deploy
-    - ssh $SSHKEY 'cd ../home/kali/Documents/deploy; tar xfz arquivos.tgz; docker-compose up -d'
-# deploy local ubuntu 
+# Deploy:
+#   image: ubuntu:latest
+#   stage: Deploy
+#   tags:
+#     - localvmdeploy
+#   script: 
+#     - tar cfz arquivos.tgz *
+#     - ssh $SSHKEY 'mkdir -p ../home/kali/Documents/deploy'
+#     - scp arquivos.tgz $SSHKEY:../home/kali/Documents/deploy
+#     - ssh $SSHKEY 'cd ../home/kali/Documents/deploy; tar xfz arquivos.tgz; docker-compose up -d'
+# # deploy local ubuntu 
 
 owasp:
   image: ubuntu:latest
@@ -108,7 +108,7 @@ owasp:
     - localvmdeploy
   script:
     - sleep 15s
-    - ssh $SSHKEY 'cd ../home/kali/Documents/deploy; mkdir -p zap/wrk/; pwd; docker run -v $(pwd):/zap/wrk -u $(id -u ${USER}):$(id -g ${USER}) -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:8085 -J report_json.json; cp ./zap/wrk/report_json.json .'
+    - ssh $SSHKEY 'cd ../home/kali/Documents/deploy; mkdir -p zap/wrk/; pwd; docker run -v $(pwd):/zap/wrk -u $(id -u ${USER}):$(id -g ${USER}) -t owasp/zap2docker-stable zap-baseline.py -t http://$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):8085 -J report_json.json; cp $(pwd):/zap/wrk/report_json.json .'
   artifacts:
     when: always
     paths: 
