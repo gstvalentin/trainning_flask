@@ -7,6 +7,7 @@ stages:
   - Static Application Security Testing
   - Deploy
   - Dynamic Application Security Testing 
+  - Export DAST Json
 
 
 services:
@@ -113,7 +114,7 @@ owasp:
 
 owasp-json:
   image: ubuntu:latest
-  stage: Dynamic Application Security Testing
+  stage: Export DAST Json
   tags:
     - localvmdeploy
   script:
