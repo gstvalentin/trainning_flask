@@ -113,8 +113,8 @@ owasp:
     - pwd
     # - cp $SSHKEY:../home/kali/Documents/deploy/report_json.json .
     # http://$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):8085
-  artifacts:
-    when: always
-    paths: 
-    - report_json.json
-  allow_failure: true
+  # artifacts:
+  #   when: always
+  #   paths: 
+  #   - report_json.json
+  # allow_failure: true
