@@ -93,20 +93,22 @@ Deploy:
   image: ubuntu:latest
   stage: Deploy
   tags:
-    - deploy
+    - localvmdeploy
   script: 
     - tar cfz arquivos.tgz *
-    - scp arquivos.tgz $SSHKEY:/home/ubuntu/deploy
-    - ssh $SSHKEY 'cd /home/ubuntu/deploy; tar xfz arquivos.tgz; /usr/local/bin/docker-compose up -d'
+    - ssh $SSHKEY 'mkdir -p ../home/kali/Documents/deploy'
+    - scp arquivos.tgz $SSHKEY:../home/kali/Documents/deploy
+    - ssh $SSHKEY 'cd ../home/kali/Documents/deploy; tar xfz arquivos.tgz; docker-compose up -d'
 # deploy em ec2 aws 
 
 # owasp:
 #   image: ubuntu:latest
 #   stage: Dynamic Application Security Testing
 #   tags:
-#     - deploy
+#     - localvmdeploy
 #   script:
-#     - ssh $SSHKEY 'cd /home/ubuntu/deploy; mkdir -p zap/wrk/; pwd; docker run -v $(pwd):/zap/wrk -u $(id -u ${USER}):$(id -g ${USER}) -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:8085 -J report_json.json; cp ./zap/wrk/report_json.json .'
+#     - sleep 15s
+#     - ssh $SSHKEY 'cd ../home/kali/Documents/deploy; mkdir -p zap/wrk/; pwd; docker run -v $(pwd):/zap/wrk -u $(id -u ${USER}):$(id -g ${USER}) -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:8085 -J report_json.json; cp ./zap/wrk/report_json.json .'
 #   artifacts:
 #     when: always
 #     paths: 
