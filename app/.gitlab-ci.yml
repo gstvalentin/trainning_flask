@@ -2,7 +2,6 @@ image: python:3.10
 
 stages:
   - build-docker
-  # - build
   - Source Composition Analysis
   - Static Application Security Testing
   - Deploy
@@ -13,94 +12,68 @@ stages:
 services:
   - docker:dind
 
-# build-docker:
-#   image: docker:stable
-#   stage: build-docker
-#   retry: 2
-#   variables:
-#     image: $CI_REGISTRY_USER/catgang:latest
-#   script:
-#       - docker info
-#       - docker build -t $CI_REGISTRY_USER/catgang:latest ./app
-#       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-#       - docker push $CI_REGISTRY_USER/catgang:latest
+build-docker:
+  image: docker:stable
+  stage: build-docker
+  retry: 2
+  variables:
+    image: $CI_REGISTRY_USER/catgang:latest
+  script:
+      - docker info
+      - docker build -t $CI_REGISTRY_USER/catgang:latest ./app
+      - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+      - docker push $CI_REGISTRY_USER/catgang:latest
 
-# build:
-#   stage: build
-#   services:
-#     - docker:dind
-#     - mysql:8.0
-#   image: $CI_REGISTRY_USER/catgang:latest
-#   variables:
-#     MYSQL_USER: $DB_USER
-#     MYSQL_PASSWORD: $DB_PASSWORD
-#     MYSQL_DATABASE: $DB_DATABASE
-#     MYSQL_ROOT_PASSWORD: $DB_ROOT_PASSWORD
+dependencycheck:
+  # image: python:3.10
+  stage: Source Composition Analysis
+  retry: 2
+  script:
+    - pip install safety
+    - safety check -r ./app/requirements.txt --json > safety-results.json 
+  artifacts:
+    paths: [safety-results.json]
+    when: always 
 
-#     DB_NAME: $DB_DATABASE
-#     DB_USER: $DB_USER
-#     DB_PASSWORD: $DB_PASSWORD
-#     DB_PORT: '3306'
-#     DB_HOST: 'db'
-#     SECRET_KEY: $DB_SECRET_KEY
-#   dependencies:
-#     - build-docker
-#   script:
-#     - python ./app/config.py makemigrations
-#     - python ./app/config.py migrate
+bandit:
+  image: python:3.10
+  stage: Static Application Security Testing
+  script:
+    - pip install -r ./app/requirements.txt
+    - pip install bandit
+    - 'bandit -r ./app/ -f json -o bandit-output.json'
+    # - 'bandit -r ./app/views.py -f json -o bandit-output.json'
+  artifacts:
+    when: always
+    paths: [bandit-output.json]
+  allow_failure: true
 
+snyk:
+  image: python:3.10
+  stage: Static Application Security Testing
+  script:
+    - pip install -r ./app/requirements.txt
+    - wget https://github.com/snyk/snyk/releases/download/v1.204.0/snyk-linux
+    - mv snyk-linux snyk && chmod +x snyk
+    - ./snyk auth $SNYK2_TOKEN
+    - ./snyk test ./app --json > snyk-results.json
+  artifacts:
+    when: always
+    paths:
+    - snyk-results.json
+  allow_failure: true
 
-
-# dependencycheck:
-#   # image: python:3.10
-#   stage: Source Composition Analysis
-#   retry: 2
-#   script:
-#     - pip install safety
-#     - safety check -r ./app/requirements.txt --json > safety-results.json 
-#   artifacts:
-#     paths: [safety-results.json]
-#     when: always 
-
-# bandit:
-#   image: python:3.10
-#   stage: Static Application Security Testing
-#   script:
-#     - pip install -r ./app/requirements.txt
-#     - pip install bandit
-#     - 'bandit -r ./app/ -f json -o bandit-output.json'
-#     # - 'bandit -r ./app/views.py -f json -o bandit-output.json'
-#   artifacts:
-#     when: always
-#     paths: [bandit-output.json]
-#   allow_failure: true
-
-# snyk:
-#   image: python:3.10
-#   stage: Static Application Security Testing
-#   script:
-#     - pip install -r ./app/requirements.txt
-#     - wget https://github.com/snyk/snyk/releases/download/v1.204.0/snyk-linux
-#     - mv snyk-linux snyk && chmod +x snyk
-#     - ./snyk auth $SNYK2_TOKEN
-#     - ./snyk test ./app --json > snyk-results.json
-#   artifacts:
-#     when: always
-#     paths:
-#     - snyk-results.json
-#   allow_failure: true
-
-# Deploy:
-#   image: ubuntu:latest
-#   stage: Deploy
-#   tags:
-#     - localvmdeploy
-#   script: 
-#     - tar cfz arquivos.tgz *
-#     - ssh $SSHKEY 'mkdir -p ../home/kali/Documents/deploy'
-#     - scp arquivos.tgz $SSHKEY:../home/kali/Documents/deploy
-#     - ssh $SSHKEY 'cd ../home/kali/Documents/deploy; tar xfz arquivos.tgz; docker-compose up -d'
-# # deploy local ubuntu 
+Deploy:
+  image: ubuntu:latest
+  stage: Deploy
+  tags:
+    - localvmdeploy
+  script: 
+    - tar cfz arquivos.tgz *
+    - ssh $SSHKEY 'mkdir -p ../home/kali/Documents/deploy'
+    - scp arquivos.tgz $SSHKEY:../home/kali/Documents/deploy
+    - ssh $SSHKEY 'cd ../home/kali/Documents/deploy; tar xfz arquivos.tgz; docker-compose up -d'
+# deploy local ubuntu 
 
 owasp:
   image: ubuntu:latest
