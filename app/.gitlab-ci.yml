@@ -108,7 +108,7 @@ owasp:
     - localvmdeploy
   script:
     - sleep 15s
-    - ssh $SSHKEY 'cd ../home/kali/Documents/deploy; mkdir -p zap/wrk/; pwd; docker run -v $(pwd):/zap/wrk -u $(id -u ${USER}):$(id -g ${USER}) -t owasp/zap2docker-stable zap-baseline.py -t http://$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):8085 -J report_json.json; cp $(pwd):/zap/wrk/report_json.json .'
+    - ssh $SSHKEY 'cd ../home/kali/Documents/deploy; mkdir -p zap/wrk/; pwd; docker run -v zap/wrk -u $(id -u ${USER}):$(id -g ${USER}) -t owasp/zap2docker-stable zap-baseline.py -t http://$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1):8085 -J report_json.json; cp zap/wrk/report_json.json .'
   artifacts:
     when: always
     paths: 
